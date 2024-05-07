@@ -16,8 +16,10 @@ import { calcularComisionMercadoPago, formatPrice } from "@/lib/utils";
 import axios from "axios";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { Paywayform } from "./paywayForm";
+import useFacebookPixel from "@/hook/usePixelFacebook";
 
 export const CheckoutForm = ({ total, products }) => {
+  const trackEvent = useFacebookPixel();
   const { sendAdresss, sendPayment, setTotal, setProducts } = useForms();
   const { push } = useRouter();
   useEffect(() => {
