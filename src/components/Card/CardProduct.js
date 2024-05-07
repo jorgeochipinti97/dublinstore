@@ -14,8 +14,47 @@ import useCartStore from "@/hook/useCartStore";
 import { useAlert } from "@/hook/useAlert";
 import { AlertComponent } from "../ui/AlertComponent";
 import gsap, { Power1 } from "gsap";
+import useFacebookPixel from "@/hook/usePixelFacebook";
 export const CardProduct = ({ product }) => {
   const agregarProducto = useCartStore((state) => state.agregarProducto);
+  const trackEvent = useFacebookPixel();
+
+  const handleAddToCartClick = () => {
+
+    const productData = {
+      content_ids: [product._id],
+      content_type: product.title,
+      value: product.discountPrice,
+      currency: "ARS",
+    };
+
+    trackEvent("AddToCart", productData);
+
+    agregarProducto({
+      title: product.title,
+      price: product.discountPrice,
+      images: product.images,
+      _id: product._id,
+    });
+
+    
+    gsap.to(".alerta", {
+      display: "block",
+      opacity: 1,
+      ease: Power1.easeIn,
+      delay: 0, // Inmediatamente después del clic
+      onComplete: () => {
+        gsap.to(".alerta", {
+          delay: 1.5,
+          opacity: 0,
+          ease: Power1.easeOut,
+          onComplete: () => {
+            gsap.set(".alerta", { display: "none" });
+          },
+        });
+      },
+    });
+  };
 
   return (
     <Card className="relative w-10/12 md:w-8/12 my-5 md:my-0 cursor-pointer h-fit rounded-lg overflow-hidden shadow-lg bg-white/90 border-none">
@@ -43,7 +82,7 @@ export const CardProduct = ({ product }) => {
           </span>
         </CardDescription>
 
-        <div className="flex flex-col items-center justify-center mt-5">
+        <div className="flex items-center justify-around mt-5">
           <div className="my-1">
             <CheckoutForm
               total={product.discountPrice}
@@ -58,31 +97,8 @@ export const CardProduct = ({ product }) => {
           </div>
           <div className="my-1">
             <Button
-              variant="outline"
-              onClick={() => {
-                agregarProducto({
-                  title: product.title,
-                  price: product.discountPrice,
-                  images: product.images,
-                  _id: product._id,
-                });
-                gsap.to(".alerta", {
-                  display: "block",
-                });
-                gsap.to(".alerta", {
-                  opacity: 1,
-                  ease: Power1.easeIn,
-                });
-                gsap.to(".alerta", {
-                  delay: 1.5,
-                  opacity: 0,
-                  ease: Power1.easeIn,
-                });
-                gsap.to(".alerta", {
-                  delay: 2,
-                  display: "none",
-                });
-              }}
+              className="bg-black hover:bg-gray-800"
+              onClick={handleAddToCartClick}
             >
               Agregar al carrito
             </Button>

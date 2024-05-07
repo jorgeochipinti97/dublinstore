@@ -5,8 +5,11 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useAlert } from "@/hook/useAlert";
 import { AlertComponent } from "../ui/AlertComponent";
+import useFacebookPixel from "@/hook/usePixelFacebook";
 
 export const RegisterForm = () => {
+  const trackEvent = useFacebookPixel();
+
   const {
     register,
     handleSubmit,
@@ -19,6 +22,12 @@ export const RegisterForm = () => {
       const response = await axios.post("/api/register", data);
       if (response) {
         reset();
+        trackEvent("Lead", {
+          content_name: 'Formulario de Guia',  // Asume que este es el formulario de interés
+          value: 1.00,  // Valor simbólico del lead
+          currency: "ARS",
+        });
+
         window.location.href = "/DUBLINGROUP-SMB.pdf";
       }
     } catch (error) {
