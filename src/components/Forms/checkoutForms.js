@@ -36,9 +36,13 @@ export const CheckoutForm = ({ total, products }) => {
   const mensaje = `Hola! recien compre estos productos ${products.map(
     (e) => `${e.title}`
   )}  por mercadopago, `;
+  const mensajepending = `Hola! recien intente comprar estos productos ${products.map(
+    (e) => `${e.title}`
+  )}  por mercadopago, `;
 
   const mensajeUrlEncoded_ = encodeURIComponent(mensaje);
   const enlaceWaLink_ = `https://wa.me/5491122984742?text=${mensajeUrlEncoded_}`;
+  const enlaceWaLink_pending = `https://wa.me/5491122984742?text=${mensajepending}`;
 
   useEffect(() => {
     try {
@@ -61,7 +65,7 @@ export const CheckoutForm = ({ total, products }) => {
         back_urls: {
           success: enlaceWaLink_, // URL de éxito
           failure: "https://www.dublingroup.store/", // URL de fallo
-          pending: "https://www.dublingroup.store/", // URL pendiente
+          pending: enlaceWaLink_pending, // URL pendiente
         },
       };
 
